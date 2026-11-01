@@ -57,3 +57,7 @@ React 19, TypeScript, Vinext/Vite, Cloudflare Workers, Drizzle, D1. Изобра
 - `public/fonts/` — локальные шрифты
 
 Без секретов и персональных данных в исходниках. Локальные `.dev.vars`, база `.wrangler/` и runtime-файлы исключены из Git.
+
+## Render
+
+Для пробного размещения на Render добавлены `render.yaml`, стандартная Next.js-сборка и PostgreSQL. Полная инструкция — [RENDER.md](RENDER.md). Команды: `npm run build:render` и `npm run start:render`. Прежняя Cloudflare/Sites-сборка выбирает отдельный адаптер D1 и остаётся доступной. Базы независимы; автоматического переноса данных из D1 нет.

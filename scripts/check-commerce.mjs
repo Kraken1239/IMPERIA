@@ -34,5 +34,4 @@ try{
  ok((await req('/api/orders',{...payload,requestKey:crypto.randomUUID(),items:[{id:product.id,size:'44',qty:1}]})).r.status,400);
  ok((await req('/api/admin',{action:'logout'},true)).r.status,200);
  console.log(`PASS: ${checks} integration checks. Orders persist, prices are server-controlled, duplicate submission is idempotent, admin authentication/CSRF/validation/catalog edits work.`);
-}finally{for(const id of created)await req('/api/admin',{action:'delete-order',id},true);console.log('Disposable orders removed. Remove qa-local-model from the local D1 database before continuing preview.');}
-
+}finally{for(const id of created)await req('/api/admin',{action:'delete-order',id},true);console.log('Disposable orders removed. Remove qa-local-model from the disposable local database before continuing preview.');}

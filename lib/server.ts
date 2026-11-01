@@ -1,10 +1,10 @@
-import {env} from 'cloudflare:workers';
-import {getDb} from '../db';
-import {products} from '../db/schema';
+import {runtimeSecret,requestOrigin} from '@imperia/runtime';
+import {store} from './storage';
 import {samples,type Product} from './catalog';
-export async function catalog():Promise<Product[]> {const rows=await getDb().select().from(products);return rows.length?rows.map(r=>JSON.parse(r.data) as Product):samples;}
-export function sameOrigin(r:Request){return r.headers.get('origin')===new URL(r.url).origin;}
-export function secret(){return (env as unknown as Record<string,string>).IMPERIA_ADMIN_KEY||'';}
+export async function catalog():Promise<Product[]> {const rows=await store.products();return rows.length?rows.map(r=>JSON.parse(r.data) as Product):samples;}
+export function sameOrigin(r:Request){return r.headers.get('origin')===requestOrigin(r);}
+export function secret(){return runtimeSecret();}
+export function secureCookie(r:Request){return requestOrigin(r).startsWith('https:');}
 export async function digest(s:string){const a=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(a)).map(v=>v.toString(16).padStart(2,'0')).join('');}
 async function sign(s:string){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret()),{name:'HMAC',hash:'SHA-256'},false,['sign']);const b=await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(v=>v.toString(16).padStart(2,'0')).join('');}
 export async function session(){const expires=String(Date.now()+1000*60*60*12);return `${expires}.${await sign(expires)}`;}

@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@imperia/runtime": [
+        "./platform/runtime.ts"
       ]
     },
     "types": [
